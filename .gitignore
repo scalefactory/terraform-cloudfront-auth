@@ -1,0 +1,11 @@
+.build-harness
+build-harness
+.idea
+.terraform
+*.iml
+*.terraform.tfstate*
+*.tfstate
+*.tfstate.backup
+*.tfvars
+*.zip
+build/
