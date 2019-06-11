@@ -69,23 +69,27 @@ Provider specific inputs marked required are only required for the specific auth
 vendor. E.g `hd` is not required if you are using the `github` auth vendor.
 
 **Google**
+
 | Name | Description | Type | Default | Required |
 |------|-------------|:----:|:-----:|:-----:|
 | hd | The hosted domain (e.g example.com) | string | `` | yes |
 | authz | The authorization method: (1) Hosted Domain - verify email's domain matches that of the given hosted domain\n   (2) HTTP Email Lookup - verify email exists in JSON array located at given HTTP endpoint\n   (3) Google Groups Lookup - verify email exists in one of given Google Groups | string | `1` | yes |
 
 **Microsoft**
+
 | Name | Description | Type | Default | Required |
 |------|-------------|:----:|:-----:|:-----:|
 | authz | The authorization method: (1) Azure AD Login (default)\n   (2) JSON Username Lookup | string | `1` | yes |
 
 **GitHub**
+
 | Name | Description | Type | Default | Required |
 |------|-------------|:----:|:-----:|:-----:|
 | github_organization | The github organization that owns the auth application | string | `` | yes |
 
 
 ### Standard
+
 | Name | Description | Type | Default | Required |
 |------|-------------|:----:|:-----:|:-----:|
 | auth_vendor | The vendor to use for authorisation (google, microsoft, github, okta, auth0, centrify) | string | `` | yes |
@@ -235,7 +239,7 @@ Check out [our other projects][github], [follow us on twitter][twitter], or [hir
 
 
 
-  [logo]: https://www.scalefactory.com/themes/custom/scalefactory/logo.svg
+  [logo]: https://academy.scalefactory.com/images/logo.svg
   [website]: https://scalefactory.com
   [github]: https://github.com/scalefactory
   [hire]: https://www.scalefactory.com/services
