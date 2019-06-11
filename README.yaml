@@ -21,13 +21,16 @@ tags:
 #logo: docs/logo.png
 
 # License of this project
-license: "APACHE2"
+license: "ISC"
 
 # Copyrights
 copyrights:
   - name: "The Scale Factory Ltd."
     url: "https://scalefactory.com"
     year: "2019"
+  - name: "Widen Enterprises"
+    url: "https://www.widen.com/"
+    year: "2017"
 
 # Canonical GitHub repo
 github_repo: scalefactory/terraform-cloudfront-auth
@@ -38,8 +41,8 @@ badges:
     image: "https://img.shields.io/github/release/scalefactory/terraform-cloudfront-auth.svg"
     url: "https://github.com/scalefactory/terraform-cloudfront-auth/releases/latest"
   - name: "License"
-    image: "https://img.shields.io/badge/License-Apache%202.0-blue.svg"
-    url: "https://opensource.org/licenses/Apache-2.0"
+    image: "https://img.shields.io/badge/License-ISC-blue.svg"
+    url: "https://opensource.org/licenses/ISC"
 
 # References
 references:

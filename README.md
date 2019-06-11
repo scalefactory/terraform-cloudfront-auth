@@ -2,7 +2,7 @@
 
 [![Scale Factory][logo]][website]
 
-# terraform-cloudfront-auth [![Latest Release](https://img.shields.io/github/release/scalefactory/terraform-cloudfront-auth.svg)](https://github.com/scalefactory/terraform-cloudfront-auth/releases/latest) [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
+# terraform-cloudfront-auth [![Latest Release](https://img.shields.io/github/release/scalefactory/terraform-cloudfront-auth.svg)](https://github.com/scalefactory/terraform-cloudfront-auth/releases/latest) [![License](https://img.shields.io/badge/License-ISC-blue.svg)](https://opensource.org/licenses/ISC)
 
 
 A Terraform module to provision a Cloudfront distribution to serve private
@@ -175,35 +175,28 @@ pull request!
 
 Copyright © 2019-2019 [The Scale Factory Ltd.](https://scalefactory.com)
 
+Copyright © 2017-2019 [Widen Enterprises](https://www.widen.com/)
+
+
+
+
+
 
 
 
 ## License
 
-[![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
+[![License: ISC](https://img.shields.io/badge/License-ISC-blue.svg)](https://opensource.org/licenses/ISC)
 
-See [LICENSE](LICENSE) for full details.
+ISC License (ISC)
 
-    Licensed to the Apache Software Foundation (ASF) under one
-    or more contributor license agreements.  See the NOTICE file
-    distributed with this work for additional information
-    regarding copyright ownership.  The ASF licenses this file
-    to you under the Apache License, Version 2.0 (the
-    "License"); you may not use this file except in compliance
-    with the License.  You may obtain a copy of the License at
+Copyright (c) 2019, The Scale Factory Ltd.
 
-      https://www.apache.org/licenses/LICENSE-2.0
+Permission to use, copy, modify, and/or distribute this software for any purpose with or without fee is hereby granted, provided that the above copyright notice and this permission notice appear in all copies.
 
-    Unless required by applicable law or agreed to in writing,
-    software distributed under the License is distributed on an
-    "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
-    KIND, either express or implied.  See the License for the
-    specific language governing permissions and limitations
-    under the License.
+THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 
-
-
-
+Source: <https://opensource.org/licenses/ISC>
 
 
 
