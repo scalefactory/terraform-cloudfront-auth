@@ -35,6 +35,12 @@ copyrights:
 # Canonical GitHub repo
 github_repo: scalefactory/terraform-cloudfront-auth
 
+# Screenshots
+screenshots:
+ - name: "Example"
+   url: "/docs/code.png"
+   description: "Example using GitHub authentication"
+
 # Badges to display
 badges:
   - name: "Latest Release"

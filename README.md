@@ -13,6 +13,12 @@ authentication. Based on [Widen - Cloudfront Auth](https://github.com/Widen/clou
 ---
 
 
+## Screenshots
+
+
+![Example](/docs/code.png)
+*Example using GitHub authentication*
+
 
 ## Introduction
 
