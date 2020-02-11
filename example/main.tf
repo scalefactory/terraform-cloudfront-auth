@@ -1,7 +1,7 @@
 module "cloudfront_auth" {
   source                         = "../"
 
-  auth_vendor                    = "github"
+  auth_vendor                    = "cognito"
   cloudfront_distribution        = "private.example.com"
   client_id                      = "CHANGE_ME"
   client_secret                  = "CHANGE_ME"

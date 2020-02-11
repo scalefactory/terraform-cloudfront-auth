@@ -1,7 +1,13 @@
 
+variable "cloudfront_auth_brach" {
+    type = "string"
+    default = "cognito"
+    description = "https://github.com/Widen/cloudfront-auth/ branch name (current actual \"cognito\")"
+}
+
 variable "auth_vendor" {
     type        = "string"
-    description = "The vendor to use for authorisation (google, microsoft, github, okta, auth0, centrify)"
+    description = "The vendor to use for authorisation (google, cognito, microsoft, github, okta, auth0, centrify)"
 }
 
 variable "cloudfront_distribution" {

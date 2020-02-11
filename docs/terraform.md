@@ -29,7 +29,7 @@ vendor. E.g `hd` is not required if you are using the `github` auth vendor.
 
 | Name | Description | Type | Default | Required |
 |------|-------------|:----:|:-----:|:-----:|
-| auth_vendor | The vendor to use for authorisation (google, microsoft, github, okta, auth0, centrify) | string | `` | yes |
+| auth_vendor | The vendor to use for authorisation (google, cognito, microsoft, github, okta, auth0, centrify) | string | `` | yes |
 | cloudfront_distribution | The FQDN of your cloudfront distribution you want to use to serve your private content (e.g www.example.com) | string | `` | yes |
 | client_id | The client id of the auth application| string | `` | yes |
 | client_secret | The client secret of the auth application| string | `` | yes |

@@ -1,4 +1,15 @@
 #
+# Terragrunt boilerplate
+#
+
+terraform {
+    # The configuration for this backend will be filled in by Terragrunt
+    backend "s3" {}
+    # The latest version of Terragrunt (v0.19.0 and above) requires Terraform 0.12.0 or above.
+    required_version = ">= 0.12.0"
+}
+
+#
 # Lambda Packaging
 #
 resource "null_resource" "copy_source" {
@@ -6,12 +17,12 @@ resource "null_resource" "copy_source" {
         command = <<EOF
 if [ ! -d "build" ]; then
   if [ ! -L "build" ]; then
-    curl -L https://github.com/Widen/cloudfront-auth/archive/master.zip --output cloudfront-auth-master.zip
-    unzip -q cloudfront-auth-master.zip -d build/
-    mkdir build/cloudfront-auth-master/distributions
+    curl -L https://github.com/Widen/cloudfront-auth/archive/${var.cloudfront_auth_brach}.zip --output cloudfront-auth-${var.cloudfront_auth_brach}.zip
+    unzip -q cloudfront-auth-${var.cloudfront_auth_brach}.zip -d build/
+    mkdir build/cloudfront-auth-${var.cloudfront_auth_brach}/distributions
 
-    cp ${data.local_file.build-js.filename} build/cloudfront-auth-master/build/build.js
-    cd build/cloudfront-auth-master && npm i minimist && npm install && cd build && npm install
+    cp ${data.local_file.build-js.filename} build/cloudfront-auth-${var.cloudfront_auth_brach}/build/build.js
+    cd build/cloudfront-auth-${var.cloudfront_auth_brach} && npm i minimist && npm install && cd build && npm install
   fi
 fi
 EOF
@@ -24,18 +35,18 @@ resource "null_resource" "build_lambda" {
 
     # Trigger a rebuild on any variable change
     triggers = {
-        vendor = "${var.auth_vendor}"
-        cloudfront_distribution = "${var.cloudfront_distribution}"
-        client_id = "${var.client_id}"
-        client_secret = "${var.client_secret}"
-        redirect_uri = "${var.redirect_uri}"
-        hd = "${var.hd}"
-        session_duration = "${var.session_duration}"
-        authz = "${var.authz}"
+        vendor = var.auth_vendor
+        cloudfront_distribution = var.cloudfront_distribution
+        client_id = var.client_id
+        client_secret = var.client_secret
+        redirect_uri = var.redirect_uri
+        hd = var.hd
+        session_duration = var.session_duration
+        authz = var.authz
     }
 
     provisioner "local-exec" {
-        command = "cd build/cloudfront-auth-master && node build/build.js --AUTH_VENDOR=${var.auth_vendor} --CLOUDFRONT_DISTRIBUTION=${var.cloudfront_distribution} --CLIENT_ID=${var.client_id} --CLIENT_SECRET=${var.client_secret} --REDIRECT_URI=${var.redirect_uri} --HD=${var.hd} --SESSION_DURATION=${var.session_duration} --AUTHZ=${var.authz} --GITHUB_ORGANIZATION=${var.github_organization}"
+        command = "cd build/cloudfront-auth-${var.cloudfront_auth_brach} && node build/build.js --AUTH_VENDOR=${var.auth_vendor} --CLOUDFRONT_DISTRIBUTION=${var.cloudfront_distribution} --CLIENT_ID=${var.client_id} --CLIENT_SECRET=${var.client_secret} --REDIRECT_URI=${var.redirect_uri} --HD=${var.hd} --SESSION_DURATION=${var.session_duration} --AUTHZ=${var.authz} --GITHUB_ORGANIZATION=${var.github_organization}"
     }
 }
 
@@ -46,11 +57,11 @@ resource "null_resource" "copy_lambda_artifact" {
     }
 
     provisioner "local-exec" {
-        command = "cp build/cloudfront-auth-master/distributions/${var.cloudfront_distribution}/${var.cloudfront_distribution}.zip ${local.lambda_filename}"
+        command = "cp build/cloudfront-auth-${var.cloudfront_auth_brach}/distributions/${var.cloudfront_distribution}/${var.cloudfront_distribution}.zip ${local.lambda_filename}"
     }
 }
 
-# workarout to sync file creation
+# workaround to sync file creation
 data "null_data_source" "lambda_artifact_sync" {
   inputs = {
     file = "${local.lambda_filename}"
@@ -154,7 +165,7 @@ resource "aws_cloudfront_distribution" "default" {
         ]
 
         forwarded_values {
-            query_string = false
+            query_string = true
             headers = [
                 "Access-Control-Request-Headers",
                 "Access-Control-Request-Method",
