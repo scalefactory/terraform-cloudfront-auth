@@ -207,10 +207,17 @@ Check out [our other projects][github], [follow us on twitter][twitter], or [hir
 ### Contributors
 
 |  [![Steve Porter][steveporter92_avatar]][steveporter92_homepage]<br/>[Steve Porter][steveporter92_homepage] |
-|---|
+|---| 
+
+|  [![Markiian Slipets][markiian.slipets_avatar]][markiian.slipets_github]<br>[Markiian Slipets][markiian.slipets_github] |
+|---|                                                                                                                  
 
   [steveporter92_homepage]: https://github.com/steveporter92
   [steveporter92_avatar]: https://github.com/steveporter92.png?size=150
+  
+  [markiian.slipets_github]: https://github.com/mslipets
+  [markiian.slipets_avatar]: https://github.com/mslipets.png?size=150
+  
 
 
 
