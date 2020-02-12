@@ -106,7 +106,7 @@ function cognitoConfiguration() {
       },
       CLIENT_SECRET: {
         message: colors.red("Client Secret"),
-        required: true,
+        required: false,
         default: R.pathOr('', ['TOKEN_REQUEST', 'client_secret'], oldConfig)
       },
       REDIRECT_URI: {
