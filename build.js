@@ -33,6 +33,7 @@ prompt.get({
     shell.exec("ssh-keygen -t rsa -m PEM -b 4096 -f ./distributions/" + config.DISTRIBUTION + "/id_rsa -N ''");
     shell.exec("openssl rsa -in ./distributions/" + config.DISTRIBUTION + "/id_rsa -pubout -outform PEM -out ./distributions/" + config.DISTRIBUTION + "/id_rsa.pub");
   }
+  console.log(result.AUTH_VENDOR);
   switch (result.AUTH_VENDOR) {
     case 'google':
       if (R.pathOr('', ['AUTHN'], oldConfig) != "GOOGLE") {
@@ -106,7 +107,7 @@ function cognitoConfiguration() {
       },
       CLIENT_SECRET: {
         message: colors.red("Client Secret"),
-        required: false,
+        required: true,
         default: R.pathOr('', ['TOKEN_REQUEST', 'client_secret'], oldConfig)
       },
       REDIRECT_URI: {
@@ -134,8 +135,13 @@ function cognitoConfiguration() {
     config.AUTH_REQUEST.scope = 'openid email';
     config.AUTH_REQUEST.redirect_uri = result.REDIRECT_URI;
 
+    console.log("client_id = " + result.CLIENT_ID);
+    console.log("client_secret = " + result.CLIENT_SECRET);
+
     config.TOKEN_REQUEST.client_id = result.CLIENT_ID;
-    config.TOKEN_REQUEST.client_secret = result.CLIENT_SECRET;
+    if (result.CLIENT_SECRET != 'none'){
+        config.TOKEN_REQUEST.client_secret = result.CLIENT_SECRET;
+    }
     config.TOKEN_REQUEST.redirect_uri = result.REDIRECT_URI;
     config.TOKEN_REQUEST.grant_type = 'authorization_code';
 
