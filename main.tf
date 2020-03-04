@@ -29,6 +29,7 @@ resource "null_resource" "copy_source" {
 
   triggers = {
     build_resource = null_resource.provision_nodejs.id
+    always_run     = "${timestamp()}"
   }
 
   provisioner "local-exec" {
@@ -71,7 +72,7 @@ resource "null_resource" "build_lambda" {
     command = <<EOF
 . $(brew --prefix nvm)/nvm.sh 2>/dev/null
 nvm use ${var.nodejs_version}&&\
-cd build/cloudfront-auth-${var.cloudfront_auth_brach} && node build/build.js --AUTH_VENDOR=${var.auth_vendor} --CLOUDFRONT_DISTRIBUTION=${var.cloudfront_distribution} --CLIENT_ID=${var.client_id} --CLIENT_SECRET=${ var.client_secret == "" ? "none" : var.client_secret } --BASE_URL=${var.base_uri} --REDIRECT_URI=${var.redirect_uri} --HD=${var.hd} --SESSION_DURATION=${var.session_duration} --AUTHZ=${var.authz} --GITHUB_ORGANIZATION=${var.github_organization}
+cd build/cloudfront-auth-${var.cloudfront_auth_brach} && node build/build.js --AUTH_VENDOR=${var.auth_vendor} --CLOUDFRONT_DISTRIBUTION=${var.cloudfront_distribution} --CLIENT_ID=${var.client_id} --CLIENT_SECRET=${var.client_secret == "" ? "none" : var.client_secret} --BASE_URL=${var.base_uri} --REDIRECT_URI=${var.redirect_uri} --HD=${var.hd} --SESSION_DURATION=${var.session_duration} --AUTHZ=${var.authz} --GITHUB_ORGANIZATION=${var.github_organization}
 EOF
   }
 }
@@ -216,7 +217,7 @@ resource "aws_cloudfront_distribution" "default" {
     geo_restriction {
       restriction_type = (var.geo_restriction_whitelisted_locations == "") ? "none" : "whitelist"
       locations        = (var.geo_restriction_whitelisted_locations == "") ? [] : [var.geo_restriction_whitelisted_locations]
-      }
+    }
   }
 
   viewer_certificate {
