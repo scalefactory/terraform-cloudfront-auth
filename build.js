@@ -139,9 +139,7 @@ function cognitoConfiguration() {
     console.log("client_secret = " + result.CLIENT_SECRET);
 
     config.TOKEN_REQUEST.client_id = result.CLIENT_ID;
-    if (result.CLIENT_SECRET != 'none'){
-        config.TOKEN_REQUEST.client_secret = result.CLIENT_SECRET;
-    }
+    config.TOKEN_REQUEST.client_secret = result.CLIENT_SECRET == 'none'? '': result.CLIENT_SECRET;
     config.TOKEN_REQUEST.redirect_uri = result.REDIRECT_URI;
     config.TOKEN_REQUEST.grant_type = 'authorization_code';
 
