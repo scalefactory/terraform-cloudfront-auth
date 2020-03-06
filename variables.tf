@@ -98,13 +98,13 @@ variable "cloudfront_acm_certificate_arn" {
 }
 
 variable "nodejs_version" {
-  type = string
-  default = "10.19.0"
+  type        = string
+  default     = "10.19.0"
   description = "Node.js runtime version."
 }
 
 variable "geo_restriction_whitelisted_locations" {
-  type = string
-  default = "" #"IE"
+  type        = string
+  default     = "" #"IE"
   description = "List of whitelist locations (Optional) - The ISO 3166-1-alpha-2 codes for which you want CloudFront either to distribute your content (whitelist)."
 }
