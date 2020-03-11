@@ -145,6 +145,27 @@ data "aws_iam_policy_document" "s3_bucket_policy" {
       ]
     }
   }
+
+  statement {
+    actions = [
+      "s3:GetBucketLocation",
+      "s3:ListBucket",
+      "s3:GetObject",
+      "s3:PutObject"
+    ]
+
+    resources = [
+      aws_s3_bucket.default.arn,
+    ]
+
+    principals {
+      type = "Service"
+      identifiers = [
+        var.bucket_access_role
+      ]
+    }
+  }
+
 }
 
 resource "aws_s3_bucket_policy" "bucket_policy" {

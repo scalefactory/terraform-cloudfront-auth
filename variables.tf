@@ -108,3 +108,8 @@ variable "geo_restriction_whitelisted_locations" {
   default     = "" #"IE"
   description = "List of whitelist locations (Optional) - The ISO 3166-1-alpha-2 codes for which you want CloudFront either to distribute your content (whitelist)."
 }
+
+variable "bucket_access_role" {
+  type        = string
+  description = "A Role ARN which granted RW rights to bucket (to be used by instance profiles)"
+}
