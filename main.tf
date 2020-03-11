@@ -157,7 +157,7 @@ data "aws_iam_policy_document" "s3_bucket_policy" {
     ]
 
     principals {
-      type        = "Service"
+      type        = "AWS"
       identifiers = var.bucket_access_roles_arn_list
     }
   }
@@ -173,7 +173,7 @@ data "aws_iam_policy_document" "s3_bucket_policy" {
     ]
 
     principals {
-      type        = "Service"
+      type        = "AWS"
       identifiers = var.bucket_access_roles_arn_list
     }
   }
