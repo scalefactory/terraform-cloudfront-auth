@@ -156,7 +156,7 @@ pull request!
 
 ## Copyrights
 
-Copyright © 2019-2019 [The Scale Factory Ltd.](https://scalefactory.com)
+Copyright © 2019-2020 [The Scale Factory Ltd.](https://scalefactory.com/)
 
 Copyright © 2017-2019 [Widen Enterprises](https://www.widen.com/)
 
