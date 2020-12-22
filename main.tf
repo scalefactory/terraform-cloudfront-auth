@@ -20,29 +20,30 @@ EOF
 
 # Builds the Lambda zip artifact
 resource "null_resource" "build_lambda" {
-    depends_on = ["null_resource.copy_source"]
+    depends_on = [null_resource.copy_source]
 
     # Trigger a rebuild on any variable change
     triggers = {
-        vendor = "${var.auth_vendor}"
-        cloudfront_distribution = "${var.cloudfront_distribution}"
-        client_id = "${var.client_id}"
-        client_secret = "${var.client_secret}"
-        redirect_uri = "${var.redirect_uri}"
-        hd = "${var.hd}"
-        session_duration = "${var.session_duration}"
-        authz = "${var.authz}"
+        vendor = var.auth_vendor
+        cloudfront_distribution = var.cloudfront_distribution
+        client_id = var.client_id
+        client_secret = var.client_secret
+        redirect_uri = var.redirect_uri
+        hd = var.hd
+        session_duration = var.session_duration
+        authz = var.authz
+        github_organization = try(var.github_organization, "")
     }
 
     provisioner "local-exec" {
-        command = "cd build/cloudfront-auth-master && node build/build.js --AUTH_VENDOR=${var.auth_vendor} --CLOUDFRONT_DISTRIBUTION=${var.cloudfront_distribution} --CLIENT_ID=${var.client_id} --CLIENT_SECRET=${var.client_secret} --REDIRECT_URI=${var.redirect_uri} --HD=${var.hd} --SESSION_DURATION=${var.session_duration} --AUTHZ=${var.authz} --GITHUB_ORGANIZATION=${var.github_organization}"
+        command = local.build_lambda_command
     }
 }
 
 # Copies the artifact to the root directory
 resource "null_resource" "copy_lambda_artifact" {
     triggers = {
-        build_resource = "${null_resource.build_lambda.id}"
+        build_resource = null_resource.build_lambda.id
     }
 
     provisioner "local-exec" {
@@ -53,8 +54,8 @@ resource "null_resource" "copy_lambda_artifact" {
 # workarout to sync file creation
 data "null_data_source" "lambda_artifact_sync" {
   inputs = {
-    file = "${local.lambda_filename}"
-    trigger = "${null_resource.copy_lambda_artifact.id}" # this is for sync only
+    file = local.lambda_filename
+    trigger = null_resource.copy_lambda_artifact.id # this is for sync only
   }
 }
 
@@ -66,10 +67,9 @@ data "local_file" "build-js" {
 # S3
 #
 resource "aws_s3_bucket" "default" {
-    bucket = "${var.bucket_name}"
+    bucket = var.bucket_name
     acl    = "private"
-    tags   = "${var.tags}"
-    region = "${var.region}"
+    tags   = var.tags
 }
 
 data "aws_iam_policy_document" "s3_bucket_policy" {
@@ -85,7 +85,7 @@ data "aws_iam_policy_document" "s3_bucket_policy" {
         principals {
             type        = "AWS"
             identifiers = [
-                "${aws_cloudfront_origin_access_identity.default.iam_arn}",
+                aws_cloudfront_origin_access_identity.default.iam_arn,
             ]
         }
     }
@@ -96,51 +96,52 @@ data "aws_iam_policy_document" "s3_bucket_policy" {
         ]
 
         resources = [
-            "${aws_s3_bucket.default.arn}",
+            aws_s3_bucket.default.arn,
         ]
 
         principals {
             type        = "AWS"
             identifiers = [
-                "${aws_cloudfront_origin_access_identity.default.iam_arn}",
+                aws_cloudfront_origin_access_identity.default.iam_arn,
             ]
         }
     }
 }
 
 resource "aws_s3_bucket_policy" "bucket_policy" {
-  bucket = "${aws_s3_bucket.default.id}"
-  policy = "${data.aws_iam_policy_document.s3_bucket_policy.json}"
+  bucket = aws_s3_bucket.default.id
+  policy = data.aws_iam_policy_document.s3_bucket_policy.json
 }
 
 #
 # Cloudfront
 #
 resource "aws_cloudfront_origin_access_identity" "default" {
-    comment = "${var.bucket_name}"
+    comment = var.bucket_name
 }
 
 resource "aws_cloudfront_distribution" "default" {
     origin {
-        domain_name = "${aws_s3_bucket.default.bucket_regional_domain_name}"
-        origin_id   = "${local.s3_origin_id}"
+        domain_name = aws_s3_bucket.default.bucket_regional_domain_name
+        origin_id   = local.s3_origin_id
 
         s3_origin_config {
-            origin_access_identity = "${aws_cloudfront_origin_access_identity.default.cloudfront_access_identity_path}"
+            origin_access_identity = aws_cloudfront_origin_access_identity.default.cloudfront_access_identity_path
         }
     }
 
-    aliases = "${concat([var.cloudfront_distribution], [var.bucket_name], var.cloudfront_aliases)}"
+    aliases = concat([var.cloudfront_distribution], [var.bucket_name], var.cloudfront_aliases)
+
     comment             = "Managed by Terraform"
-    default_root_object = "${var.cloudfront_default_root_object}"
+    default_root_object = var.cloudfront_default_root_object
     enabled             = true
     http_version        = "http2"
     is_ipv6_enabled     = true
-    price_class         = "${var.cloudfront_price_class}"
-    tags                = "${var.tags}"
+    price_class         = var.cloudfront_price_class
+    tags                = var.tags
 
     default_cache_behavior {
-        target_origin_id = "${local.s3_origin_id}"
+        target_origin_id = local.s3_origin_id
 
         // Read only
         allowed_methods = [
@@ -168,7 +169,7 @@ resource "aws_cloudfront_distribution" "default" {
 
         lambda_function_association {
             event_type = "viewer-request"
-            lambda_arn = "${aws_lambda_function.default.qualified_arn}"
+            lambda_arn = aws_lambda_function.default.qualified_arn
         }
 
         viewer_protocol_policy = "redirect-to-https"
@@ -181,10 +182,24 @@ resource "aws_cloudfront_distribution" "default" {
         }
     }
 
-    viewer_certificate {
-        acm_certificate_arn = "${var.cloudfront_acm_certificate_arn}"
-        ssl_support_method  = "sni-only"
-        cloudfront_default_certificate = false
+    # Handle the case where no certificate ARN provided
+    dynamic "viewer_certificate" {
+        for_each = ( var.cloudfront_acm_certificate_arn == null ? { use_acm = false } : { } )
+        content {
+            ssl_support_method  = "sni-only"
+            cloudfront_default_certificate = true
+        }
+    }
+
+    # Handle the case where certificate ARN was provided
+    dynamic "viewer_certificate" {
+        for_each = ( var.cloudfront_acm_certificate_arn != null ? { use_acm = true } : { } )
+
+        content {
+            ssl_support_method  = "sni-only"
+            acm_certificate_arn = var.cloudfront_acm_certificate_arn
+            cloudfront_default_certificate = false
+          }
     }
 }
 
@@ -210,19 +225,20 @@ data "aws_iam_policy_document" "lambda_log_access" {
 
 # This function is created in us-east-1 as required by CloudFront.
 resource "aws_lambda_function" "default" {
-    depends_on       = ["null_resource.copy_lambda_artifact"]
+    provider         = aws.us-east-1
 
-    provider         = "aws.us-east-1"
     description      = "Managed by Terraform"
     runtime          = "nodejs8.10"
-    role             = "${aws_iam_role.lambda_role.arn}"
-    filename         = "${local.lambda_filename}"
+    role             = aws_iam_role.lambda_role.arn
+    filename         = local.lambda_filename
     function_name    = "cloudfront_auth"
     handler          = "index.handler"
     publish          = true
     timeout          = 5
-    source_code_hash = "${filebase64sha256("${data.null_data_source.lambda_artifact_sync.outputs["file"]}")}"
-    tags             = "${var.tags}"
+    source_code_hash = filebase64sha256(data.null_data_source.lambda_artifact_sync.outputs["file"])
+    tags             = var.tags
+
+    depends_on       = [null_resource.copy_lambda_artifact]
 }
 
 data "aws_iam_policy_document" "lambda_assume_role" {
@@ -247,17 +263,17 @@ data "aws_iam_policy_document" "lambda_assume_role" {
 
 resource "aws_iam_role" "lambda_role" {
     name               = "lambda_role"
-    assume_role_policy = "${data.aws_iam_policy_document.lambda_assume_role.json}"
+    assume_role_policy = data.aws_iam_policy_document.lambda_assume_role.json
 }
 
 # Attach the logging access document to the above role.
 resource "aws_iam_role_policy_attachment" "lambda_log_access" {
-    role       = "${aws_iam_role.lambda_role.name}"
-    policy_arn = "${aws_iam_policy.lambda_log_access.arn}"
+    role       = aws_iam_role.lambda_role.name
+    policy_arn = aws_iam_policy.lambda_log_access.arn
 }
 
 # Create an IAM policy that will be attached to the role
 resource "aws_iam_policy" "lambda_log_access" {
     name   = "cloudfront_auth_lambda_log_access"
-    policy = "${data.aws_iam_policy_document.lambda_log_access.json}"
+    policy = data.aws_iam_policy_document.lambda_log_access.json
 }
