@@ -205,10 +205,13 @@ Check out [our other projects][github], [follow us on twitter][twitter], or [hir
 ### Contributors
 
 |  [![Steve Porter][steveporter92_avatar]][steveporter92_homepage]<br/>[Steve Porter][steveporter92_homepage] |
+|  [![Tim Bannister][sftim_avatar]][sftim_homepage]<br/>[Tim Bannister][sftim_homepage] |
 |---|
 
   [steveporter92_homepage]: https://github.com/steveporter92
   [steveporter92_avatar]: https://github.com/steveporter92.png?size=150
+  [sftim_homepage]: https://github.com/sftim
+  [sftim_avatar]: https://github.com/sftim.png?size=150
 
 
 
