@@ -74,7 +74,12 @@ variable "cloudfront_aliases" {
 variable "cloudfront_price_class" {
   type        = string
   default     = "PriceClass_All"
-  description = "Cloudfront price classes: `PriceClass_All`, `PriceClass_200`, `PriceClass_100`"
+  description = "Cloudfront price class; for example: 'PriceClass_All', 'PriceClass_200', 'PriceClass_100'"
+
+  validation {
+    condition     = can(regex("^PriceClass_", var.cloudfront_price_class))
+    error_message = "The cloudfront_price_class value must start with \"PriceClass_\"."
+  }
 }
 
 variable "cloudfront_default_root_object" {
