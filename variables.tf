@@ -17,6 +17,7 @@ variable "client_id" {
 variable "client_secret" {
   type        = string
   description = "The authorisation client secret"
+  sensitive   = true
 }
 
 variable "redirect_uri" {
