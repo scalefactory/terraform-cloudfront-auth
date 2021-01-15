@@ -1,5 +1,12 @@
 # terraform-cloudfront-auth [![Latest Release](https://img.shields.io/github/release/scalefactory/terraform-cloudfront-auth.svg)](https://github.com/scalefactory/terraform-cloudfront-auth/releases/latest) [![License](https://img.shields.io/badge/License-ISC-blue.svg)](https://opensource.org/licenses/ISC)
 
+This is an open source project published by The Scale Factory.
+
+We currently consider this project to be hibernating.
+
+These are projects that we’re no longer prioritising, but which we keep ticking over for the benefit of the few customers we support who still use them.
+
+:information_source: We’re not regularly patching these projects, or actively watching for issues or PRs. We’ll periodically make updates or respond to contributions if one of the team has some spare time to invest.
 
 A Terraform module to provision a Cloudfront distribution to serve private
 content in an S3 bucket with Lamba@Edge Google/Microsoft/Github/Okta/Auth0/Centrify
