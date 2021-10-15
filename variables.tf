@@ -92,3 +92,9 @@ variable "cloudfront_acm_certificate_arn" {
   description = "ACM Certificate ARN for Cloudfront"
   default     = null
 }
+
+variable "lambda_role_name" {
+  description = "Override the lambda iam role name."
+  type        = string
+  default     = "lambda_role"
+}
