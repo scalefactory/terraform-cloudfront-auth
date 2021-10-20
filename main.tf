@@ -42,6 +42,7 @@ resource "null_resource" "build_lambda" {
 
 # Copies the artifact to the root directory
 resource "null_resource" "copy_lambda_artifact" {
+  depends_on = [null_resource.build_lambda]
   triggers = {
     build_resource = null_resource.build_lambda.id
   }
