@@ -246,7 +246,7 @@ resource "aws_lambda_function" "default" {
   handler          = "index.handler"
   publish          = true
   timeout          = 5
-  source_code_hash = filebase64sha256(file(local.lambda_filename))
+  source_code_hash = filebase64sha256(local.lambda_filename)
   tags             = var.tags
 
   depends_on = [null_resource.copy_lambda_artifact]
