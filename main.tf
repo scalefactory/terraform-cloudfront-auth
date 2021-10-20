@@ -51,13 +51,13 @@ resource "null_resource" "copy_lambda_artifact" {
   }
 }
 
-# workarout to sync file creation
-data "null_data_source" "lambda_artifact_sync" {
-  inputs = {
-    file    = local.lambda_filename
-    trigger = null_resource.copy_lambda_artifact.id # this is for sync only
-  }
-}
+# # workarout to sync file creation
+# data "null_data_source" "lambda_artifact_sync" {
+#   inputs = {
+#     file    = local.lambda_filename
+#     trigger = null_resource.copy_lambda_artifact.id # this is for sync only
+#   }
+# }
 
 data "local_file" "build-js" {
   filename = "${path.module}/build.js"
@@ -245,7 +245,7 @@ resource "aws_lambda_function" "default" {
   handler          = "index.handler"
   publish          = true
   timeout          = 5
-  source_code_hash = filebase64sha256(data.null_data_source.lambda_artifact_sync.outputs["file"])
+  source_code_hash = filebase64sha256(file(local.lambda_filename))
   tags             = var.tags
 
   depends_on = [null_resource.copy_lambda_artifact]
