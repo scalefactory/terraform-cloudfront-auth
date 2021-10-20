@@ -52,6 +52,14 @@ resource "null_resource" "copy_lambda_artifact" {
   }
 }
 
+data "local_file" "lambda_artifact" {
+  depends_on = [
+    null_resource.copy_lambda_artifact
+  ]
+  filename = local.lambda_filename
+}
+
+
 # # workarout to sync file creation
 # data "null_data_source" "lambda_artifact_sync" {
 #   inputs = {
@@ -246,10 +254,9 @@ resource "aws_lambda_function" "default" {
   handler          = "index.handler"
   publish          = true
   timeout          = 5
-  source_code_hash = filebase64sha256(local.lambda_filename)
+  source_code_hash = sha256(local_file.lambda_artifact.content_base64)
   tags             = var.tags
 
-  depends_on = [null_resource.copy_lambda_artifact]
 }
 
 data "aws_iam_policy_document" "lambda_assume_role" {
