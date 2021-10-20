@@ -173,11 +173,11 @@ data "aws_iam_policy_document" "lambda_log_access" {
 resource "aws_lambda_function" "default" {
   provider = aws.us-east-1
 
-  description      = "${var.environment}-${var.name}-cloudfront-auth"
+  description      = "${var.environment}-${var.name}-ca"
   runtime          = "nodejs14.x"
   role             = aws_iam_role.lambda_role.arn
   filename         = var.lambda_filename
-  function_name    = "${var.environment}-${var.name}-cloudfront-auth"
+  function_name    = "${var.environment}-${var.name}-ca"
   handler          = "index.handler"
   publish          = true
   timeout          = 5
