@@ -75,7 +75,7 @@ resource "aws_cloudfront_distribution" "default" {
     }
   }
 
-  aliases = concat([var.cloudfront_distribution], [local.bucket_name], var.cloudfront_aliases)
+  aliases = concat([var.name], [local.bucket_name], var.cloudfront_aliases)
 
   comment             = var.name
   default_root_object = var.cloudfront_default_root_object

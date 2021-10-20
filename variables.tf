@@ -1,9 +1,4 @@
 
-variable "cloudfront_distribution" {
-  type        = string
-  description = "The cloudfront distribtion"
-}
-
 variable "session_duration" {
   type        = number
   default     = 1
