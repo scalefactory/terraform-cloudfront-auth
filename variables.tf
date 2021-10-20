@@ -1,57 +1,13 @@
 
-variable "auth_vendor" {
-  type        = string
-  description = "The vendor to use for authorisation (google, microsoft, github, okta, auth0, centrify)"
-}
-
 variable "cloudfront_distribution" {
   type        = string
   description = "The cloudfront distribtion"
-}
-
-variable "client_id" {
-  type        = string
-  description = "The authorisation client id"
-}
-
-variable "client_secret" {
-  type        = string
-  description = "The authorisation client secret"
-  sensitive   = true
-}
-
-variable "redirect_uri" {
-  type        = string
-  description = "The redirect uri "
-}
-
-variable "hd" {
-  type        = string
-  description = "The hosted domain (google only)"
-  default     = null
 }
 
 variable "session_duration" {
   type        = number
   default     = 1
   description = "Session duration in hours"
-}
-
-variable "authz" {
-  type        = string
-  default     = "1"
-  description = "The authorisation method (google, microsoft only). Mirosoft: (1) Azure AD Login (default)\n   (2) JSON Username Lookup\n\n Google: (1) Hosted Domain - verify email's domain matches that of the given hosted domain\n   (2) HTTP Email Lookup - verify email exists in JSON array located at given HTTP endpoint\n   (3) Google Groups Lookup - verify email exists in one of given Google Groups"
-}
-
-variable "github_organization" {
-  type        = string
-  default     = null
-  description = "The GitHub organization. Required for GitHub auth vendor only"
-}
-
-variable "bucket_name" {
-  type        = string
-  description = "The name of your s3 bucket"
 }
 
 variable "tags" {
@@ -93,8 +49,14 @@ variable "cloudfront_acm_certificate_arn" {
   default     = null
 }
 
-variable "lambda_role_name" {
-  description = "Override the lambda iam role name."
-  type        = string
-  default     = "lambda_role"
+variable "name" {
+  type = string
+}
+
+variable "environment" {
+  type = string
+}
+
+variable "lambda_filename" {
+  type = string
 }

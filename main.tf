@@ -1,82 +1,9 @@
-#
-# Lambda Packaging
-#
-resource "null_resource" "copy_source" {
-  provisioner "local-exec" {
-    command = <<EOF
-if [ ! -d "build" ]; then
-  if [ ! -L "build" ]; then
-    curl -L https://github.com/Widen/cloudfront-auth/archive/master.zip --output cloudfront-auth-master.zip
-    unzip -q cloudfront-auth-master.zip -d build/
-    mkdir build/cloudfront-auth-master/distributions
-
-    cp ${data.local_file.build-js.filename} build/cloudfront-auth-master/build/build.js
-    cd build/cloudfront-auth-master && npm i minimist && npm install && cd build && npm install
-  fi
-fi
-EOF
-  }
-}
-
-# Builds the Lambda zip artifact
-resource "null_resource" "build_lambda" {
-  depends_on = [null_resource.copy_source]
-
-  # Trigger a rebuild on any variable change
-  triggers = {
-    vendor                  = var.auth_vendor
-    cloudfront_distribution = var.cloudfront_distribution
-    client_id               = var.client_id
-    client_secret           = var.client_secret
-    redirect_uri            = var.redirect_uri
-    hd                      = var.hd
-    session_duration        = var.session_duration
-    authz                   = var.authz
-    github_organization     = try(var.github_organization, "")
-  }
-
-  provisioner "local-exec" {
-    command = local.build_lambda_command
-  }
-}
-
-# Copies the artifact to the root directory
-resource "null_resource" "copy_lambda_artifact" {
-  depends_on = [null_resource.build_lambda]
-  triggers = {
-    build_resource = null_resource.build_lambda.id
-  }
-
-  provisioner "local-exec" {
-    command = "cp build/cloudfront-auth-master/distributions/${var.cloudfront_distribution}/${var.cloudfront_distribution}.zip ${local.lambda_filename}"
-  }
-}
-
-data "local_file" "lambda_artifact" {
-  depends_on = [
-    null_resource.copy_lambda_artifact
-  ]
-  filename = local.lambda_filename
-}
-
-
-# # workarout to sync file creation
-# data "null_data_source" "lambda_artifact_sync" {
-#   inputs = {
-#     file    = local.lambda_filename
-#     trigger = null_resource.copy_lambda_artifact.id # this is for sync only
-#   }
-# }
-
-data "local_file" "build-js" {
-  filename = "${path.module}/build.js"
-}
 
 #
 # S3
 #
 resource "aws_s3_bucket" "default" {
-  bucket = var.bucket_name
+  bucket = local.bucket_name
   acl    = "private"
   tags   = var.tags
 }
@@ -135,7 +62,7 @@ resource "aws_s3_bucket_policy" "bucket_policy" {
 # Cloudfront
 #
 resource "aws_cloudfront_origin_access_identity" "default" {
-  comment = var.bucket_name
+  comment = local.bucket_name
 }
 
 resource "aws_cloudfront_distribution" "default" {
@@ -148,9 +75,9 @@ resource "aws_cloudfront_distribution" "default" {
     }
   }
 
-  aliases = concat([var.cloudfront_distribution], [var.bucket_name], var.cloudfront_aliases)
+  aliases = concat([var.cloudfront_distribution], [local.bucket_name], var.cloudfront_aliases)
 
-  comment             = "Managed by Terraform"
+  comment             = var.name
   default_root_object = var.cloudfront_default_root_object
   enabled             = true
   http_version        = "http2"
@@ -246,15 +173,15 @@ data "aws_iam_policy_document" "lambda_log_access" {
 resource "aws_lambda_function" "default" {
   provider = aws.us-east-1
 
-  description      = "Managed by Terraform"
-  runtime          = "nodejs12.x"
+  description      = "${var.environment}-${var.name}-cloudfront-auth"
+  runtime          = "nodejs14.x"
   role             = aws_iam_role.lambda_role.arn
-  filename         = local.lambda_filename
-  function_name    = "cloudfront_auth"
+  filename         = var.lambda_filename
+  function_name    = "${var.environment}-${var.name}-cloudfront-auth"
   handler          = "index.handler"
   publish          = true
   timeout          = 5
-  source_code_hash = sha256(data.local_file.lambda_artifact.content_base64)
+  source_code_hash = sha256(var.lambda_filename)
   tags             = var.tags
 
 }
@@ -280,7 +207,7 @@ data "aws_iam_policy_document" "lambda_assume_role" {
 }
 
 resource "aws_iam_role" "lambda_role" {
-  name               = var.lambda_role_name
+  name               = "${var.environment}-${var.name}-auth-role"
   assume_role_policy = data.aws_iam_policy_document.lambda_assume_role.json
 }
 
@@ -292,6 +219,6 @@ resource "aws_iam_role_policy_attachment" "lambda_log_access" {
 
 # Create an IAM policy that will be attached to the role
 resource "aws_iam_policy" "lambda_log_access" {
-  name   = "cloudfront_auth_lambda_log_access"
+  name   = "${var.environment}-${var.name}-log-access"
   policy = data.aws_iam_policy_document.lambda_log_access.json
 }
