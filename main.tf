@@ -170,15 +170,17 @@ data "aws_iam_policy_document" "lambda_log_access" {
 }
 
 # This function is created in us-east-1 as required by CloudFront.
-
+locals {
+  name = replace(var.name, ".", "-")
+}
 resource "aws_lambda_function" "default" {
   provider = aws.us-east-1
 
-  description      = "${var.environment}-${var.name}-ca"
+  function_name    = "${local.name}-auth"
+  description      = "${var.name}-auth"
   runtime          = "nodejs14.x"
   role             = aws_iam_role.lambda_role.arn
   filename         = var.lambda_filename
-  function_name    = "${var.environment}-${var.name}-ca"
   handler          = "index.handler"
   publish          = true
   timeout          = 5
@@ -208,7 +210,7 @@ data "aws_iam_policy_document" "lambda_assume_role" {
 }
 
 resource "aws_iam_role" "lambda_role" {
-  name               = "${var.environment}-${var.name}-auth-role"
+  name               = "${var.name}-auth-role"
   assume_role_policy = data.aws_iam_policy_document.lambda_assume_role.json
 }
 
@@ -220,6 +222,6 @@ resource "aws_iam_role_policy_attachment" "lambda_log_access" {
 
 # Create an IAM policy that will be attached to the role
 resource "aws_iam_policy" "lambda_log_access" {
-  name   = "${var.environment}-${var.name}-log-access"
+  name   = "${var.name}-log-access"
   policy = data.aws_iam_policy_document.lambda_log_access.json
 }
