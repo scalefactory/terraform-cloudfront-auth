@@ -75,7 +75,7 @@ resource "aws_cloudfront_distribution" "default" {
     }
   }
 
-  aliases = concat([var.name], [local.bucket_name], var.cloudfront_aliases)
+  aliases = concat([local.bucket_name], var.cloudfront_aliases)
 
   comment             = var.name
   default_root_object = var.cloudfront_default_root_object
@@ -170,6 +170,7 @@ data "aws_iam_policy_document" "lambda_log_access" {
 }
 
 # This function is created in us-east-1 as required by CloudFront.
+
 resource "aws_lambda_function" "default" {
   provider = aws.us-east-1
 
