@@ -1,4 +1,4 @@
-module cloudfront_auth {
+module "cloudfront_auth" {
   source = "../"
 
   auth_vendor             = "github"
@@ -13,7 +13,7 @@ module cloudfront_auth {
   cloudfront_acm_certificate_arn = aws_acm_certificate.cert.arn
 }
 
-resource aws_acm_certificate cert {
+resource "aws_acm_certificate" "cert" {
   provider          = aws.us-east-1
   domain_name       = "example.com"
   validation_method = "EMAIL"
@@ -23,7 +23,7 @@ resource aws_acm_certificate cert {
 }
 
 // A test object for the bucket.
-resource aws_s3_bucket_object test_object {
+resource "aws_s3_bucket_object" "test_object" {
   bucket       = module.cloudfront_auth.s3_bucket
   key          = "index.html"
   source       = "${path.module}/index.html"
