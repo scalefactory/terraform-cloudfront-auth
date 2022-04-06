@@ -41,27 +41,13 @@ resource "null_resource" "build_lambda" {
   }
 }
 
-# Copies the artifact to the root directory
-resource "null_resource" "copy_lambda_artifact" {
-  triggers = {
-    build_resource = null_resource.build_lambda.id
-  }
-
-  provisioner "local-exec" {
-    command = "cp build/cloudfront-auth-master/distributions/${var.cloudfront_distribution}/${var.cloudfront_distribution}.zip ${local.lambda_filename}"
-  }
-}
-
-# workarout to sync file creation
-data "null_data_source" "lambda_artifact_sync" {
-  inputs = {
-    file    = local.lambda_filename
-    trigger = null_resource.copy_lambda_artifact.id # this is for sync only
-  }
-}
-
 data "local_file" "build-js" {
   filename = "${path.module}/build.js"
+}
+
+data "local_file" "distribution-zip" {
+  filename = "${path.module}/build/cloudfront-auth-master/distributions/${var.cloudfront_distribution}/${var.cloudfront_distribution}.zip"
+  depends_on = [null_resource.build_lambda]
 }
 
 #
@@ -242,11 +228,11 @@ resource "aws_lambda_function" "default" {
   runtime          = "nodejs12.x"
   role             = aws_iam_role.lambda_role.arn
   filename         = local.lambda_filename
-  function_name    = "${replace(var.cloudfront_distribution,".","-")}-cloudfront_auth"
+  function_name    = "${replace(var.cloudfront_distribution,".","_")}_cloudfront_auth"
   handler          = "index.handler"
   publish          = true
   timeout          = 5
-  source_code_hash = filebase64sha256(data.null_data_source.lambda_artifact_sync.outputs["file"])
+  source_code_hash = filebase64sha256(data.local_file.distribution_zip)
   tags             = var.tags
 
   depends_on = [null_resource.copy_lambda_artifact]
@@ -273,7 +259,7 @@ data "aws_iam_policy_document" "lambda_assume_role" {
 }
 
 resource "aws_iam_role" "lambda_role" {
-  name               = "${var.cloudfront_distribution}-lambda-auth-role"
+  name               = "${var.cloudfront_distribution}_lambda_auth_role"
   assume_role_policy = data.aws_iam_policy_document.lambda_assume_role.json
 }
 
@@ -285,6 +271,6 @@ resource "aws_iam_role_policy_attachment" "lambda_log_access" {
 
 # Create an IAM policy that will be attached to the role
 resource "aws_iam_policy" "lambda_log_access" {
-  name   = "${var.cloudfront_distribution}-cloudfront_auth_lambda_log_access"
+  name   = "${var.cloudfront_distribution}_cloudfront_auth_lambda_log_access"
   policy = data.aws_iam_policy_document.lambda_log_access.json
 }
