@@ -9,7 +9,7 @@ locals {
   build_lambda_command_plus_hd = var.auth_vendor == "google" ? "${chomp(local.build_lambda_command_common)} --HD=${format("%q", var.hd)}" : local.build_lambda_command_common
 
   build_lambda_command_common = <<-EOT
-    cd build/cloudfront-auth-master && node build/build.js --AUTH_VENDOR='${var.auth_vendor}' --CLOUDFRONT_DISTRIBUTION='${var.cloudfront_distribution}' --CLIENT_ID='${var.client_id}' --CLIENT_SECRET='${var.client_secret}' --REDIRECT_URI='${var.redirect_uri}' --SESSION_DURATION='${var.session_duration}' --AUTHZ=${format("%q", var.authz)}
+    cd build/cloudfront-auth-master && node build/build.js --AUTH_VENDOR='${var.auth_vendor}' --CLOUDFRONT_DISTRIBUTION='${var.cloudfront_distribution}' --CLIENT_ID='${var.client_id}' --CLIENT_SECRET='${var.client_secret}' --REDIRECT_URI='${var.redirect_uri}' --SESSION_DURATION='${var.session_duration}' --AUTHZ=${format("%q", var.authz)} --BASE_URL='${var.base_url}'
     EOT
 }
 

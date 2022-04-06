@@ -33,6 +33,7 @@ resource "null_resource" "build_lambda" {
     session_duration        = var.session_duration
     authz                   = var.authz
     github_organization     = try(var.github_organization, "")
+    base_url                = var.base_url
   }
 
   provisioner "local-exec" {

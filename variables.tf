@@ -31,6 +31,12 @@ variable "hd" {
   default     = null
 }
 
+variable "base_url" {
+  type        = string
+  description = "The base URL of your auth provider. Applicable to Auth0 and Okta"
+  default     = null
+}
+
 variable "session_duration" {
   type        = number
   default     = 1
@@ -40,7 +46,7 @@ variable "session_duration" {
 variable "authz" {
   type        = string
   default     = "1"
-  description = "The authorisation method (google, microsoft only). Mirosoft: (1) Azure AD Login (default)\n   (2) JSON Username Lookup\n\n Google: (1) Hosted Domain - verify email's domain matches that of the given hosted domain\n   (2) HTTP Email Lookup - verify email exists in JSON array located at given HTTP endpoint\n   (3) Google Groups Lookup - verify email exists in one of given Google Groups"
+  description = "The authorization method (google, microsoft only). Mirosoft: (1) Azure AD Login (default)\n   (2) JSON Username Lookup\n\n Google: (1) Hosted Domain - verify email's domain matches that of the given hosted domain\n   (2) HTTP Email Lookup - verify email exists in JSON array located at given HTTP endpoint\n   (3) Google Groups Lookup - verify email exists in one of given Google Groups"
 }
 
 variable "github_organization" {

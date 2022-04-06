@@ -96,6 +96,10 @@ vendor. E.g `hd` is not required if you are using the `github` auth vendor.
 |------|-------------|:----:|:-----:|:-----:|
 | github_organization | The github organization that owns the auth application | string | `` | yes |
 
+** Auth0, Okta **
+| Name | Description | Type | Default | Required |
+| base_url | The URL of your Authorization tenant for Auth0 and Okta | string | `` | yes |
+
 
 ### Standard
 
