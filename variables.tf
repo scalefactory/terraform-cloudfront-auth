@@ -6,7 +6,7 @@ variable "auth_vendor" {
 
 variable "cloudfront_distribution" {
   type        = string
-  description = "The cloudfront distribtion"
+  description = "The cloudfront distribution"
 }
 
 variable "client_id" {

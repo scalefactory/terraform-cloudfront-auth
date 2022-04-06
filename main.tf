@@ -242,7 +242,7 @@ resource "aws_lambda_function" "default" {
   runtime          = "nodejs12.x"
   role             = aws_iam_role.lambda_role.arn
   filename         = local.lambda_filename
-  function_name    = "cloudfront_auth"
+  function_name    = "${var.cloudfront_distribution}-cloudfront_auth"
   handler          = "index.handler"
   publish          = true
   timeout          = 5
@@ -273,7 +273,7 @@ data "aws_iam_policy_document" "lambda_assume_role" {
 }
 
 resource "aws_iam_role" "lambda_role" {
-  name               = "lambda_role"
+  name               = "${var.cloudfront_distribution}-lambda-auth-role"
   assume_role_policy = data.aws_iam_policy_document.lambda_assume_role.json
 }
 
