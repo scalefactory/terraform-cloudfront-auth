@@ -285,6 +285,6 @@ resource "aws_iam_role_policy_attachment" "lambda_log_access" {
 
 # Create an IAM policy that will be attached to the role
 resource "aws_iam_policy" "lambda_log_access" {
-  name   = "cloudfront_auth_lambda_log_access"
+  name   = "${var.cloudfront_distribution}-cloudfront_auth_lambda_log_access"
   policy = data.aws_iam_policy_document.lambda_log_access.json
 }
