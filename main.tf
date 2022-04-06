@@ -242,7 +242,7 @@ resource "aws_lambda_function" "default" {
   runtime          = "nodejs12.x"
   role             = aws_iam_role.lambda_role.arn
   filename         = local.lambda_filename
-  function_name    = "${var.cloudfront_distribution}-cloudfront_auth"
+  function_name    = "${replace(var.cloudfront_distribution,".","-")}-cloudfront_auth"
   handler          = "index.handler"
   publish          = true
   timeout          = 5
