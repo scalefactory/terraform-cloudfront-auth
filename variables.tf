@@ -33,7 +33,7 @@ variable "hd" {
 
 variable "base_url" {
   type        = string
-  description = "The base URL of your auth provider. Applicable to Auth0 and Okta"
+  description = "The base URL of your auth provider. Applicable to Auth0 and Okta. This must begin with http(s)."
   default     = null
 }
 

@@ -98,7 +98,7 @@ vendor. E.g `hd` is not required if you are using the `github` auth vendor.
 
 ** Auth0, Okta **
 | Name | Description | Type | Default | Required |
-| base_url | The URL of your Authorization tenant for Auth0 and Okta | string | `` | yes |
+| base_url | The URL of your Authorization tenant for Auth0 and Okta. This must begin with http(s). | string | `` | yes |
 
 
 ### Standard
