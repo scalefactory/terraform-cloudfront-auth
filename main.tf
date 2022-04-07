@@ -18,8 +18,9 @@ resource "null_resource" "build_lambda" {
     github_organization     = try(var.github_organization, "")
     base_url                = var.base_url
     dest_file               = "${path.root}/build/cloudfront-auth-master/distributions/${var.cloudfront_distribution}/${var.cloudfront_distribution}.zip"
+    zip_refresh             = fileexists("${path.root}/build/cloudfront-auth-master/distributions/${var.cloudfront_distribution}/${var.cloudfront_distribution}.zip") ? false : timestamp()
   }
-  
+
   provisioner "local-exec" {
     command = <<EOF
 if [ ! -d "build" ]; then
@@ -226,7 +227,7 @@ resource "aws_lambda_function" "default" {
   runtime          = "nodejs12.x"
   role             = aws_iam_role.lambda_role.arn
   filename         = data.local_file.distribution_zip.filename
-  function_name    = "${replace(var.cloudfront_distribution,".","_")}_cloudfront_auth"
+  function_name    = "${replace(var.cloudfront_distribution, ".", "_")}_cloudfront_auth"
   handler          = "index.handler"
   publish          = true
   timeout          = 5
