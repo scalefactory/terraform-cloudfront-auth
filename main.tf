@@ -1,7 +1,25 @@
 #
 # Lambda Packaging
 #
-resource "null_resource" "copy_source" {
+
+# Builds the Lambda zip artifact
+resource "null_resource" "build_lambda" {
+
+  # Trigger a rebuild on any variable change
+  triggers = {
+    vendor                  = var.auth_vendor
+    cloudfront_distribution = var.cloudfront_distribution
+    client_id               = var.client_id
+    client_secret           = var.client_secret
+    redirect_uri            = var.redirect_uri
+    hd                      = var.hd
+    session_duration        = var.session_duration
+    authz                   = var.authz
+    github_organization     = try(var.github_organization, "")
+    base_url                = var.base_url
+    dest_file               = "${path.root}/build/cloudfront-auth-master/distributions/${var.cloudfront_distribution}/${var.cloudfront_distribution}.zip"
+  }
+  
   provisioner "local-exec" {
     command = <<EOF
 if [ ! -d "build" ]; then
@@ -16,25 +34,6 @@ if [ ! -d "build" ]; then
 fi
 EOF
   }
-}
-
-# Builds the Lambda zip artifact
-resource "null_resource" "build_lambda" {
-  depends_on = [null_resource.copy_source]
-
-  # Trigger a rebuild on any variable change
-  triggers = {
-    vendor                  = var.auth_vendor
-    cloudfront_distribution = var.cloudfront_distribution
-    client_id               = var.client_id
-    client_secret           = var.client_secret
-    redirect_uri            = var.redirect_uri
-    hd                      = var.hd
-    session_duration        = var.session_duration
-    authz                   = var.authz
-    github_organization     = try(var.github_organization, "")
-    base_url                = var.base_url
-  }
 
   provisioner "local-exec" {
     command = local.build_lambda_command
@@ -46,8 +45,7 @@ data "local_file" "build-js" {
 }
 
 data "local_file" "distribution_zip" {
-  filename = "${path.root}/build/cloudfront-auth-master/distributions/${var.cloudfront_distribution}/${var.cloudfront_distribution}.zip"
-  depends_on = [null_resource.build_lambda]
+  filename = null_resource.build_lambda.triggers.dest_file
 }
 
 #
@@ -232,7 +230,7 @@ resource "aws_lambda_function" "default" {
   handler          = "index.handler"
   publish          = true
   timeout          = 5
-  source_code_hash = filebase64sha256(data.local_file.distribution_zip.filename)
+  source_code_hash = base64sha256(data.local_file.distribution_zip.content)
   tags             = var.tags
 
 }
