@@ -45,8 +45,8 @@ data "local_file" "build-js" {
   filename = "${path.module}/build.js"
 }
 
-data "local_file" "distribution-zip" {
-  filename = "${path.module}/build/cloudfront-auth-master/distributions/${var.cloudfront_distribution}/${var.cloudfront_distribution}.zip"
+data "local_file" "distribution_zip" {
+  filename = "${path.root}/build/cloudfront-auth-master/distributions/${var.cloudfront_distribution}/${var.cloudfront_distribution}.zip"
   depends_on = [null_resource.build_lambda]
 }
 
@@ -227,15 +227,14 @@ resource "aws_lambda_function" "default" {
   description      = "Managed by Terraform"
   runtime          = "nodejs12.x"
   role             = aws_iam_role.lambda_role.arn
-  filename         = local.lambda_filename
+  filename         = data.local_file.distribution_zip.filename
   function_name    = "${replace(var.cloudfront_distribution,".","_")}_cloudfront_auth"
   handler          = "index.handler"
   publish          = true
   timeout          = 5
-  source_code_hash = filebase64sha256(data.local_file.distribution_zip)
+  source_code_hash = filebase64sha256(data.local_file.distribution_zip.filename)
   tags             = var.tags
 
-  depends_on = [null_resource.copy_lambda_artifact]
 }
 
 data "aws_iam_policy_document" "lambda_assume_role" {
