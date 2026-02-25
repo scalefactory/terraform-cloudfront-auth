@@ -203,30 +203,14 @@ give it a ★.
     width="300px">
 </a>
 
-We're a [DevOps and Cloud Infrastructure Consultancy][services] company based in London,
-UK. We love empowering teams to deliver more with [AWS][aws].
+We're a AWS Cloud Consultancy company based in London, UK. We love empowering teams to deliver more with [AWS][aws].
 
-Check out [our other projects][github], [follow us on twitter][twitter], or [hire us][services] to help with your cloud strategy and implementation.
-
-
-### Contributors
-
-|  [![Steve Porter][steveporter92_avatar]][steveporter92_homepage]<br/>[Steve Porter][steveporter92_homepage] |
-|  [![Tim Bannister][sftim_avatar]][sftim_homepage]<br/>[Tim Bannister][sftim_homepage] |
-|---|
-
-  [steveporter92_homepage]: https://github.com/steveporter92
-  [steveporter92_avatar]: https://github.com/steveporter92.png?size=150
-  [sftim_homepage]: https://github.com/sftim
-  [sftim_avatar]: https://github.com/sftim.png?size=150
-
-
+Check out [our other projects][github].
 
 
   [logo]: https://academy.scalefactory.com/images/logo.svg
   [website]: https://scalefactory.com
   [github]: https://github.com/scalefactory
-  [services]: https://www.scalefactory.com/services
   [aws]: https://aws.amazon.com/
   [linkedin]: https://www.linkedin.com/company/the-scale-factory
   [twitter]: https://twitter.com/scalefactory
